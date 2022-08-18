@@ -8,9 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		11C034EB28AEBC750019666E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C034EA28AEBC750019666E /* AppDelegate.swift */; };
-		11C034ED28AEBC750019666E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C034EC28AEBC750019666E /* SceneDelegate.swift */; };
 		11C034EF28AEBC750019666E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C034EE28AEBC750019666E /* ViewController.swift */; };
-		11C034F228AEBC750019666E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 11C034F028AEBC750019666E /* Main.storyboard */; };
 		11C034F428AEBC770019666E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11C034F328AEBC770019666E /* Assets.xcassets */; };
 		11C034F728AEBC770019666E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 11C034F528AEBC770019666E /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
@@ -18,9 +16,7 @@
 /* Begin PBXFileReference section */
 		11C034E728AEBC750019666E /* YouTubeAPI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YouTubeAPI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		11C034EA28AEBC750019666E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		11C034EC28AEBC750019666E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		11C034EE28AEBC750019666E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		11C034F128AEBC750019666E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		11C034F328AEBC770019666E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		11C034F628AEBC770019666E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		11C034F828AEBC770019666E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -57,9 +53,7 @@
 			isa = PBXGroup;
 			children = (
 				11C034EA28AEBC750019666E /* AppDelegate.swift */,
-				11C034EC28AEBC750019666E /* SceneDelegate.swift */,
 				11C034EE28AEBC750019666E /* ViewController.swift */,
-				11C034F028AEBC750019666E /* Main.storyboard */,
 				11C034F328AEBC770019666E /* Assets.xcassets */,
 				11C034F528AEBC770019666E /* LaunchScreen.storyboard */,
 				11C034F828AEBC770019666E /* Info.plist */,
@@ -127,7 +121,6 @@
 			files = (
 				11C034F728AEBC770019666E /* LaunchScreen.storyboard in Resources */,
 				11C034F428AEBC770019666E /* Assets.xcassets in Resources */,
-				11C034F228AEBC750019666E /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -140,21 +133,12 @@
 			files = (
 				11C034EF28AEBC750019666E /* ViewController.swift in Sources */,
 				11C034EB28AEBC750019666E /* AppDelegate.swift in Sources */,
-				11C034ED28AEBC750019666E /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		11C034F028AEBC750019666E /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				11C034F128AEBC750019666E /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		11C034F528AEBC770019666E /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -292,7 +276,6 @@
 				INFOPLIST_FILE = YouTubeAPI/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -320,7 +303,6 @@
 				INFOPLIST_FILE = YouTubeAPI/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
