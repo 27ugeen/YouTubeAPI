@@ -8,10 +8,17 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+    var model = VideoDataModel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-//        view.backgroundColor = .red
+        view.backgroundColor = .red
+        model.getChannel(ChannelsId.travels.rawValue) { data in
+            print(data)
+        }
+        
+//    model.getChannel1()
     }
 
 
