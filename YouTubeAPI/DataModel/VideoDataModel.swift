@@ -15,7 +15,7 @@ enum VideoURLs: String {
     case video = ""
 }
 
-enum ChannelsId: String {
+enum ChannelsId: String, CaseIterable {
     case arminVanBuuren = "UCu5jfQcpRLm9xhmlSd5S8xw"
     case earthRelaxation = "UCS4jPUCax8d3f-uke--YXXQ"
     case travels = "UCc3Qxl2JWMyvEUpDIbWwzXA"
