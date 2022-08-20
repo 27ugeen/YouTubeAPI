@@ -45,6 +45,8 @@ class BannerTableViewCell: UITableViewCell {
         collection.backgroundColor = .clear
         collection.isPagingEnabled = true
         
+        let timer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(autoScroll), userInfo: nil, repeats: true)
+        
         return collection
     }()
     
@@ -64,6 +66,25 @@ class BannerTableViewCell: UITableViewCell {
             return visibleIndexPath.row
         }
         return currentPage
+    }
+    
+    @objc private func autoScroll() {
+//        print("timer fire!")
+        //TODO: - looks like pice of shit... need fix logic or remove to mainVC
+        for cell in carouselCollectionView.visibleCells {
+            let cIndexPath: IndexPath? = carouselCollectionView.indexPath(for: cell)
+            if ((cIndexPath?.row)! < (model?.count ?? 1) - 1){
+                let nIndexPath: IndexPath?
+                nIndexPath = IndexPath.init(row: (cIndexPath?.row)! + 1, section: (cIndexPath?.section)!)
+                
+                carouselCollectionView.scrollToItem(at: nIndexPath!, at: .right, animated: true)
+            } else {
+                let nIndexPath: IndexPath?
+                nIndexPath = IndexPath.init(row: 0, section: (cIndexPath?.section)!)
+                carouselCollectionView.scrollToItem(at: nIndexPath!, at: .left, animated: true)
+            }
+            
+        }
     }
 }
 //MARK: - setupViews
