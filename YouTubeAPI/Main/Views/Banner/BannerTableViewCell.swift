@@ -45,7 +45,7 @@ class BannerTableViewCell: UITableViewCell {
         collection.backgroundColor = .clear
         collection.isPagingEnabled = true
         
-//        let timer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(autoScroll), userInfo: nil, repeats: true)
+        let timer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(autoScroll), userInfo: nil, repeats: true)
         
         return collection
     }()
@@ -128,6 +128,8 @@ extension BannerTableViewCell: UICollectionViewDataSource {
         
         cell.chNameLabel.text = model?[indexPath.item].channelTittle ?? "Title channel"
         cell.subscribersLabel.text = "\(model?[indexPath.item].subscribers ?? "0") subscribers"
+        cell.bannerImgView.image = model?[indexPath.item].channelImg
+
         
         return cell
     }

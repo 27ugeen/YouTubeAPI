@@ -18,6 +18,10 @@ class PlaylistTableViewCell: UITableViewCell {
     
     var cPosition: Position?
     
+    var model: [PlaylistItemsStub]? {
+        didSet { playlistCollectionView.reloadData() }
+    }
+    
     //MARK: - init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -29,7 +33,7 @@ class PlaylistTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     //MARK: - subviews
-    lazy var playlistTitleLabel: UILabel = {
+    private lazy var playlistTitleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Playlist Name"
@@ -60,6 +64,8 @@ extension PlaylistTableViewCell {
         contentView.backgroundColor = .clear
         contentView.addSubview(playlistTitleLabel)
         contentView.addSubview(playlistCollectionView)
+        //TODO: - relocate
+        self.playlistTitleLabel.text = model?[0].playlistTitle
         
         playlistCollectionView.register(PlaylistCollectionViewCell.self, forCellWithReuseIdentifier: plItemId)
         
@@ -84,11 +90,25 @@ extension PlaylistTableViewCell: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return model?.count ?? 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: plItemId, for: indexPath) as? PlaylistCollectionViewCell else { return UICollectionViewCell() }
+        
+        let m = model?[indexPath.item]
+        
+        cell.playlistImgView.image = m?.playlistImg
+        cell.videoNameLabel.text = m?.channelTitle ?? "Channel"
+//        cell.viewsCountLabel.text = "\(m?.)"
+        
+//        let position: Position = cPosition ?? .mid
+//        switch position {
+//        case .mid:
+//            self.playlistTitleLabel.text = model?[0].playlistTitle
+//        case .bot:
+//            self.playlistTitleLabel.text = model?[0].playlistTitle
+//        }
         
         //        cell.backgroundColor = .blue
         //        cell.playlistImgView.image = UIImage(named: "play")

@@ -28,15 +28,15 @@ class BannerCollectionViewCell: UICollectionViewCell {
         return view
     }()
     
-    private lazy var bannerImgView: UIImageView = {
+    lazy var bannerImgView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFill
         
         imageView.backgroundColor = .white
         
-        imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 4
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         return imageView
     }()
     

@@ -24,19 +24,19 @@ class PlaylistCollectionViewCell: UICollectionViewCell {
     lazy var playlistImgView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFill
         
         imageView.backgroundColor = .white
         
-        imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 8
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         return imageView
     }()
     
     lazy var videoNameLabel: UILabel = {
         let textLabel = UILabel()
         textLabel.translatesAutoresizingMaskIntoConstraints = false
-        textLabel.numberOfLines = 0
+        textLabel.numberOfLines = 1
         textLabel.text = "Meteora"
         textLabel.font = .systemFont(ofSize: 17, weight: .medium)
         textLabel.textColor = .white

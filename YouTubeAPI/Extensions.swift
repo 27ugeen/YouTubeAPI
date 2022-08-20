@@ -30,6 +30,7 @@ extension UIColor {
 
 extension UIImageView {
     func downloaded(from url: URL, contentMode mode: ContentMode = .scaleAspectFit) {
+        print("URL: \(url)")
         contentMode = mode
         URLSession.shared.dataTask(with: url) { data, response, error in
             guard
@@ -46,5 +47,19 @@ extension UIImageView {
     func downloaded(from link: String, contentMode mode: ContentMode = .scaleAspectFit) {
         guard let url = URL(string: link) else { return }
         downloaded(from: url, contentMode: mode)
+    }
+}
+
+extension UIImageView {
+    func load(url: URL) {
+        DispatchQueue.global().async { [weak self] in
+            if let data = try? Data(contentsOf: url) {
+                if let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        self?.image = image
+                    }
+                }
+            }
+        }
     }
 }

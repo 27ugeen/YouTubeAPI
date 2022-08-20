@@ -20,6 +20,10 @@ class MainViewController: UIViewController {
         didSet { tableView.reloadData() }
     }
     
+    private var playlists: [PlaylistItemsStub]? {
+        didSet { tableView.reloadData() }
+    }
+    
     //MARK: - init
     init(viewModel: MainViewModel) {
         self.mainVM = viewModel
@@ -38,7 +42,8 @@ class MainViewController: UIViewController {
         overrideUserInterfaceStyle = .dark
         
         setupViews()
-//        getChannels()
+        getChannels()
+//        VideoDataModel().getData()
     }
     //MARK: - subviews
     private let tableView: UITableView = {
@@ -52,10 +57,39 @@ class MainViewController: UIViewController {
     
     //MARK: - methods
     private func getChannels() {
-        mainVM.getChannelItems { arr in
-            self.channels = arr
-            print("ARR: \(self.channels)")
+//        mainVM.getChannelItems { arr in
+//            self.channels = arr
+//            print("ARR: \(self.channels)")
+////            self.mainVM.getAllPlaylists(<#[String]#>) { arr in
+////                
+////            }
+//        }
+        mainVM.getChannels() { channels, playlists in
+            self.channels = channels
+            self.playlists = playlists
+            print("Channels: \(self.channels)")
+            print("Playlists: \(self.playlists)")
+            
         }
+//        VideoDataModel().decodeModelFromData("UCu5jfQcpRLm9xhmlSd5S8xw") { ch, pl in
+//            print("CH: \(ch)")
+//            print("PL: \(pl)")
+//
+//        }
+//        VideoDataModel().getChannel("UCu5jfQcpRLm9xhmlSd5S8xw") { ch in
+//            print("CH: \(ch)")
+//            VideoDataModel().getPlaylist(ch.items[0].playListId) { pl in
+//                print("PL: \(pl)")
+//
+//            }
+//
+//        }
+        
+//        VideoDataModel().getPlaylist("PLh9bWygNPws3eKPY1NEp4eC_buZVqXNQu") { pl in
+//            print("PL: \(pl)")
+//        }
+        
+//        VideoDataModel().getData()
     }
 
 }
@@ -101,9 +135,11 @@ extension MainViewController: UITableViewDataSource {
         case 2:
             plMidCell.selectionStyle = .none
             plMidCell.cPosition = .mid
+            plMidCell.model = self.playlists
             return plMidCell
         case 3:
             plBotCell.selectionStyle = .none
+            plBotCell.model = self.playlists
             plBotCell.cPosition = .bot
             return plBotCell
         default:
