@@ -11,6 +11,9 @@ class MainViewController: UIViewController {
     //MARK: - props
     private let titleCellId = TitleTableViewCell.cellId
     private let bannerCellId = BannerTableViewCell.cellId
+    private let plMidCellId = PlaylistTableViewCell.cellId
+    private let plBotCellId = PlaylistTableViewCell.cellId
+    
     private let mainVM: MainViewModel
     
     private var channels: [ChannelItemsStub]? {
@@ -35,7 +38,7 @@ class MainViewController: UIViewController {
         overrideUserInterfaceStyle = .dark
         
         setupViews()
-        getChannels()
+//        getChannels()
     }
     //MARK: - subviews
     private let tableView: UITableView = {
@@ -63,10 +66,9 @@ extension MainViewController {
         
         tableView.register(TitleTableViewCell.self, forCellReuseIdentifier: titleCellId)
         tableView.register(BannerTableViewCell.self, forCellReuseIdentifier: bannerCellId)
-//        tableView.register(DetailNightTableViewCell.self, forCellReuseIdentifier: nightCellID)
-//        tableView.register(SunMoonTableViewCell.self, forCellReuseIdentifier: sunMoonCellID)
-//        tableView.register(AirQTableViewCell.self, forCellReuseIdentifier: airQCellID)
-//
+        tableView.register(PlaylistTableViewCell.self, forCellReuseIdentifier: plMidCellId)
+        tableView.register(PlaylistTableViewCell.self, forCellReuseIdentifier: plBotCellId)
+
         tableView.dataSource = self
         tableView.delegate = self
         
@@ -81,13 +83,14 @@ extension MainViewController {
 //MARK: - UITableViewDataSource
 extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return (model?.daily.count ?? 0) + 3
-        return 2
+        return 4
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let titleCell = tableView.dequeueReusableCell(withIdentifier: titleCellId) as! TitleTableViewCell
         let bannerCell = tableView.dequeueReusableCell(withIdentifier: bannerCellId) as! BannerTableViewCell
+        let plMidCell = tableView.dequeueReusableCell(withIdentifier: plMidCellId) as! PlaylistTableViewCell
+        let plBotCell = tableView.dequeueReusableCell(withIdentifier: plBotCellId) as! PlaylistTableViewCell
         
         switch indexPath.row {
         case 0:
@@ -95,6 +98,14 @@ extension MainViewController: UITableViewDataSource {
         case 1:
             bannerCell.model = self.channels
             return bannerCell
+        case 2:
+            plMidCell.selectionStyle = .none
+            plMidCell.cPosition = .mid
+            return plMidCell
+        case 3:
+            plBotCell.selectionStyle = .none
+            plBotCell.cPosition = .bot
+            return plBotCell
         default:
             return bannerCell
         }
@@ -108,8 +119,10 @@ extension MainViewController: UITableViewDelegate {
             return 42
         case 1:
             return 200
-//        case 2:
-//            return 63
+        case 2:
+            return 184
+        case 3:
+            return 248
         default:
             return 0
         }

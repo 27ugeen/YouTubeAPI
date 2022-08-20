@@ -45,7 +45,7 @@ class BannerTableViewCell: UITableViewCell {
         collection.backgroundColor = .clear
         collection.isPagingEnabled = true
         
-        let timer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(autoScroll), userInfo: nil, repeats: true)
+//        let timer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(autoScroll), userInfo: nil, repeats: true)
         
         return collection
     }()
@@ -133,7 +133,6 @@ extension BannerTableViewCell: UICollectionViewDataSource {
     }
 }
 //MARK: - UICollectionViewDelegate
-
 extension BannerTableViewCell: UICollectionViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         currentPage = getCurrentPage()

@@ -8,7 +8,7 @@
 import UIKit
 
 class BannerCollectionViewCell: UICollectionViewCell {
-    // MARK: - Properties
+    // MARK: - props
     static let itemId = "BannerCollectionViewCell"
     
     // MARK: - init
