@@ -35,53 +35,7 @@ class MainViewModel {
         self.dataModel = dataModel
     }
     //MARK: - metods
-//    func getChannels(completion: @escaping ([ChannelItemsStub], [PlaylistItemsStub]) -> Void) {
-//        var channelModelArr: [ChannelModel] = []
-//        ChannelsId.allCases.forEach { channel in
-//            dataModel.decodeModelFromData(channel.rawValue) { chModel, plModel in
-//                channelModelArr.append(chModel)
-//
-//                let channel = chModel.items[0]
-//                let playlist = plModel.items[0]
-//
-//                var chImg: UIImage?
-//                var plImg: UIImage?
-//
-//                let group = DispatchGroup()
-//
-//                group.enter()
-//                self.getImgFromUrl(playlist.imgUrl) { img in
-//                    chImg = img
-//                    group.leave()
-//                }
-//                group.enter()
-//                self.getImgFromUrl(playlist.imgUrl) { img in
-//                    plImg = img
-//                    group.leave()
-//                }
-//                group.notify(queue: .main) {
-//
-//                    let newChannel = ChannelItemsStub(channelTittle: channel.title,
-//                                                      playListId: channel.playListId,
-//                                                      channelImg: chImg ?? UIImage(),
-//                                                      subscribers: channel.subscriberCount)
-//                    self.channelItems.append(newChannel)
-//
-//                    let newPlaylist = PlaylistItemsStub(channelTitle: playlist.channelTitle,
-//                                                        videoTitle: playlist.videoTitle,
-//                                                       videoId: playlist.videoId,
-//                                                       playlistImg: plImg ?? UIImage())
-//                    self.playlistItems.append(newPlaylist)
-//
-//                    if channelModelArr.count == ChannelsId.allCases.count {
-//                        completion(self.channelItems, self.playlistItems)
-//                    }
-//                }
-//            }
-//        }
-//    }
-    
-    private func getAllChannels(completion: @escaping ([ChannelModel]) -> Void) {
+    private func getChannelsArrModel(completion: @escaping ([ChannelModel]) -> Void) {
         var channelModelArr: [ChannelModel] = []
         ChannelsId.allCases.forEach { channel in
             dataModel.getChannel(channel.rawValue) { data in
@@ -89,6 +43,36 @@ class MainViewModel {
                 if channelModelArr.count == ChannelsId.allCases.count {
                     
                     completion(channelModelArr)
+                }
+            }
+        }
+    }
+    
+    func getAllChannels(completion: @escaping ([ChannelItemsStub]) -> Void ) {
+        self.getChannelsArrModel() { arr in
+            arr.forEach { item in
+                let m = item.items[0]
+                var chImg: UIImage?
+                
+                let group = DispatchGroup()
+                
+                group.enter()
+                self.dataModel.getPlaylistItems(m.playListId) { data in
+                    self.getImgFromUrl(data.items[0].imgUrl) { img in
+                        chImg = img
+                        group.leave()
+                    }
+                }
+                group.notify(queue: .main) {
+                    let newItem = ChannelItemsStub(channelTittle: m.title,
+                                                   playListId: m.playListId,
+                                                   channelImg: chImg ?? UIImage(),
+                                                   subscribers: m.subscriberCount)
+                    self.channelItems.append(newItem)
+                    
+                    if self.channelItems.count == 4 {
+                        completion(self.channelItems)
+                    }
                 }
             }
         }
@@ -138,33 +122,16 @@ class MainViewModel {
     
     private func getImgFromUrl(_ link: String, completion: @escaping (UIImage) -> Void) {
         guard let url = URL(string: link) else { return }
-            URLSession.shared.dataTask(with: url) { data, response, error in
-                guard
-                    let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
-                    let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
-                    let data = data, error == nil,
-                    let image = UIImage(data: data)
-                    else { return }
-                DispatchQueue.main.async() {
-                    completion(image)
-                }
-            }.resume()
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard
+                let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
+                let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
+                let data = data, error == nil,
+                let image = UIImage(data: data)
+            else { return }
+            DispatchQueue.main.async() {
+                completion(image)
+            }
+        }.resume()
     }
-    
-//    func getChannelItems(completion: @escaping ([ChannelItemsStub]) -> Void ) {
-//        self.getAllChannels() { arr in
-//            arr.forEach { item in
-//                let newItem = ChannelItemsStub(channelTittle: item.items[0].title,
-//                                               playListId: item.items[0].playListId,
-//                                               channelImg: item.items[0].imgUrl,
-//                                               subscribers: item.items[0].subscriberCount)
-//                self.channelItems.append(newItem)
-//            }
-//            completion(self.channelItems)
-//        }
-//    }
-    
-
-    
-    
 }

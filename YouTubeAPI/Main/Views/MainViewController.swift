@@ -42,18 +42,8 @@ class MainViewController: UIViewController {
         overrideUserInterfaceStyle = .dark
         
         setupViews()
-//        getChannels()
-//        VideoDataModel().getData()
-//        VideoDataModel().getPlaylistTitle("UUu5jfQcpRLm9xhmlSd5S8xw") { data in
-//            print("Title: \(data)")
-//
-//        }
-//        VideoDataModel().getVideo("x31vGxoI7go") { data in
-//            print("ViDEO: \(data)")
-//
-//        }
         
-        
+        getChannels()
         getPlaylist()
     }
     //MARK: - subviews
@@ -74,40 +64,10 @@ class MainViewController: UIViewController {
     }
     
     private func getChannels() {
-//        mainVM.getChannelItems { arr in
-//            self.channels = arr
-//            print("ARR: \(self.channels)")
-////            self.mainVM.getAllPlaylists(<#[String]#>) { arr in
-////                
-////            }
-//        }
-//        mainVM.getChannels() { channels, playlists in
-//            self.channels = channels
-//            self.playlists = playlists
-//            print("Channels: \(self.channels)")
-//            print("Playlists: \(self.playlists)")
-//            
-//        }
-//        VideoDataModel().decodeModelFromData("UCu5jfQcpRLm9xhmlSd5S8xw") { ch, pl in
-//            print("CH: \(ch)")
-//            print("PL: \(pl)")
-//
-//        }
-//        VideoDataModel().getChannel("UCu5jfQcpRLm9xhmlSd5S8xw") { ch in
-//            print("CH: \(ch)")
-//            VideoDataModel().getPlaylist(ch.items[0].playListId) { pl in
-//                print("PL: \(pl)")
-//
-//            }
-//
-//        }
-        
-//        VideoDataModel().getPlaylist("PLh9bWygNPws3eKPY1NEp4eC_buZVqXNQu") { pl in
-//            print("PL: \(pl)")
-//        }
-        
+        mainVM.getAllChannels() { data in
+            self.channels = data
+        }
     }
-
 }
 //MARK: - setupViews
 extension MainViewController {

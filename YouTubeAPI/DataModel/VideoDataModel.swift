@@ -19,8 +19,8 @@ enum ChannelsId: String, CaseIterable {
     case arminVanBuuren = "UCu5jfQcpRLm9xhmlSd5S8xw"
     case earthRelaxation = "UCS4jPUCax8d3f-uke--YXXQ"
     case travels = "UCc3Qxl2JWMyvEUpDIbWwzXA"
-    case deepMode = "UCX-USfenzQlhrEJR1zD5IYw"
-    //vevo "UC2pmfLm7iq6Ov1UwYrWYkZA"
+//    case deepMode = "UCX-USfenzQlhrEJR1zD5IYw"
+    case vevo = "UC2pmfLm7iq6Ov1UwYrWYkZA"
 }
 
 enum PlayListsId: String, CaseIterable {
@@ -334,17 +334,6 @@ class VideoDataModel: VideoDataModelProtocol {
         }
     }
     
-    func decodeModelFromData(_ channelId: String, completion: @escaping (ChannelModel, PlaylistModel) -> Void) {
-        self.getChannel(channelId) { channelModel in
-//            self.getPlaylist(channelModel.items[0].playListId) { playlistModel in
-//                completion(channelModel, playlistModel)
-//            }
-        }
-    }
-    
-    
-    
-    
     func getData() {
         let cUrl = self.createUrl(VideoURLs.playlist.rawValue, "&playlistId=", "UUu5jfQcpRLm9xhmlSd5S8xw")
         print(cUrl)
@@ -360,15 +349,4 @@ class VideoDataModel: VideoDataModelProtocol {
 
         }
     }
-    
-//    func getPlayList() {
-//        let cUrl = self.createURLForPlayList(PlayListsId.vevo.rawValue)
-//
-//        let req = AF.request(cUrl)
-//
-//        req.responseJSON { data in
-//            print("Data: \(data)")
-//
-//        }
-//    }
 }
