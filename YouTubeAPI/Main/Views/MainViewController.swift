@@ -42,8 +42,19 @@ class MainViewController: UIViewController {
         overrideUserInterfaceStyle = .dark
         
         setupViews()
-        getChannels()
+//        getChannels()
 //        VideoDataModel().getData()
+//        VideoDataModel().getPlaylistTitle("UUu5jfQcpRLm9xhmlSd5S8xw") { data in
+//            print("Title: \(data)")
+//
+//        }
+//        VideoDataModel().getVideo("x31vGxoI7go") { data in
+//            print("ViDEO: \(data)")
+//
+//        }
+        
+        
+        getPlaylist()
     }
     //MARK: - subviews
     private let tableView: UITableView = {
@@ -56,6 +67,12 @@ class MainViewController: UIViewController {
     }()
     
     //MARK: - methods
+    private func getPlaylist() {
+        mainVM.getAllPlaylists(PlayListsId.vevo.rawValue) { pl in
+            self.playlists = pl
+        }
+    }
+    
     private func getChannels() {
 //        mainVM.getChannelItems { arr in
 //            self.channels = arr
@@ -64,13 +81,13 @@ class MainViewController: UIViewController {
 ////                
 ////            }
 //        }
-        mainVM.getChannels() { channels, playlists in
-            self.channels = channels
-            self.playlists = playlists
-            print("Channels: \(self.channels)")
-            print("Playlists: \(self.playlists)")
-            
-        }
+//        mainVM.getChannels() { channels, playlists in
+//            self.channels = channels
+//            self.playlists = playlists
+//            print("Channels: \(self.channels)")
+//            print("Playlists: \(self.playlists)")
+//            
+//        }
 //        VideoDataModel().decodeModelFromData("UCu5jfQcpRLm9xhmlSd5S8xw") { ch, pl in
 //            print("CH: \(ch)")
 //            print("PL: \(pl)")
@@ -89,7 +106,6 @@ class MainViewController: UIViewController {
 //            print("PL: \(pl)")
 //        }
         
-//        VideoDataModel().getData()
     }
 
 }
@@ -136,11 +152,13 @@ extension MainViewController: UITableViewDataSource {
             plMidCell.selectionStyle = .none
             plMidCell.cPosition = .mid
             plMidCell.model = self.playlists
+            plMidCell.playlistTitleLabel.text = self.playlists?[0].playlistTitle
             return plMidCell
         case 3:
             plBotCell.selectionStyle = .none
-            plBotCell.model = self.playlists
             plBotCell.cPosition = .bot
+            plBotCell.model = self.playlists
+            plBotCell.playlistTitleLabel.text = self.playlists?[0].playlistTitle
             return plBotCell
         default:
             return bannerCell

@@ -10,22 +10,24 @@ import Alamofire
 
 enum VideoURLs: String {
     case channel = "https://youtube.googleapis.com/youtube/v3/channels?part=contentDetails&part=statistics&part=snippet&key="
-    case playlist = "https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=1&key="
-    case video = ""
+    case playlistTitle = "https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&key="
+    case playlist = "https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=10&key="
+    case video = "https://youtube.googleapis.com/youtube/v3/videos?part=snippet&part=statistics&part=player&key="
 }
-
-
 
 enum ChannelsId: String, CaseIterable {
     case arminVanBuuren = "UCu5jfQcpRLm9xhmlSd5S8xw"
     case earthRelaxation = "UCS4jPUCax8d3f-uke--YXXQ"
     case travels = "UCc3Qxl2JWMyvEUpDIbWwzXA"
     case deepMode = "UCX-USfenzQlhrEJR1zD5IYw"
+    //vevo "UC2pmfLm7iq6Ov1UwYrWYkZA"
 }
 
-//enum PlayListsId: String {
-//    case vevo = "PL9tY0BWXOZFvcTuePgQKjjbdTmCIn5SHW"
-//}
+enum PlayListsId: String, CaseIterable {
+    case vevo = "PL9tY0BWXOZFvcTuePgQKjjbdTmCIn5SHW"
+    //v2 "PL9tY0BWXOZFv8JKRhQtU4elLD73E3kvvo"
+    case avb = "UUu5jfQcpRLm9xhmlSd5S8xw"
+}
 
 struct ChannelModel: Decodable {
     let items: [ChannelItems]
@@ -97,6 +99,90 @@ struct ChannelItems: Decodable {
     }
 }
 
+struct VideoModel: Decodable {
+    let items: [VideoItems]
+    enum CodingKeys: String, CodingKey {
+        case items
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        items = try container.decode([VideoItems].self, forKey: .items)
+    }
+}
+
+struct VideoItems: Decodable {
+    
+    enum CodingKeys: String, CodingKey {
+//        case player
+        case snippet
+        case statistics
+    }
+    
+    enum SnippetCodingKeys: String, CodingKey {
+        case thumbnails
+    }
+    
+    enum ThumbnailsCodingKeys: String, CodingKey {
+        case high
+    }
+
+    let imgUrl: String
+    enum HighCodingKeys: String, CodingKey {
+        case imgUrl = "url"
+    }
+    
+    let viewCount: String
+    enum StatisticsCodingKeys: String, CodingKey {
+        case viewCount
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        //=====================snippet===========================
+        let snippetContainer = try container.nestedContainer(keyedBy: SnippetCodingKeys.self, forKey: .snippet)
+        //=====================thumbnails========================
+        let thumbContainer = try snippetContainer.nestedContainer(keyedBy: ThumbnailsCodingKeys.self, forKey: .thumbnails)
+        //=====================high==============================
+        let highContainer = try thumbContainer.nestedContainer(keyedBy: HighCodingKeys.self, forKey: .high)
+        imgUrl = try highContainer.decode(String.self, forKey: .imgUrl)
+        //=====================viewCount=========================
+        let statisticsContainer = try container.nestedContainer(keyedBy: StatisticsCodingKeys.self, forKey: .statistics)
+        viewCount = try statisticsContainer.decode(String.self, forKey: .viewCount)
+    }
+}
+
+struct PlayListTitleModel: Decodable {
+    let items: [PlaylistTitleItems]
+    enum CodingKeys: String, CodingKey {
+        case items
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        items = try container.decode([PlaylistTitleItems].self, forKey: .items)
+    }
+}
+
+struct PlaylistTitleItems: Decodable {
+    
+    enum CodingKeys: String, CodingKey {
+        case snippet
+    }
+    
+    let playlistTitle: String
+    enum TitleCodingKeys: String, CodingKey {
+        case playlistTitle = "title"
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        //=====================snippet===========================
+        let snippetContainer = try container.nestedContainer(keyedBy: TitleCodingKeys.self, forKey: .snippet)
+        playlistTitle = try snippetContainer.decode(String.self, forKey: .playlistTitle)
+    }
+}
+
 struct PlaylistModel: Decodable {
     let items: [PlaylistItems]
     enum CodingKeys: String, CodingKey {
@@ -116,10 +202,10 @@ struct PlaylistItems: Decodable {
     }
     
     let channelTitle: String
-    let playlistTitle: String
+    let videoTitle: String
     enum SnippetCodingKeys: String, CodingKey {
         case channelTitle
-        case playlistTitle = "title"
+        case videoTitle = "title"
 
         case resourceId
         case thumbnails
@@ -135,7 +221,7 @@ struct PlaylistItems: Decodable {
     }
 
     let imgUrl: String
-    enum StandardcodingKeys: String, CodingKey {
+    enum HighCodingKeys: String, CodingKey {
         case imgUrl = "url"
     }
     
@@ -144,14 +230,14 @@ struct PlaylistItems: Decodable {
         //=====================snippet===========================
         let snippetContainer = try container.nestedContainer(keyedBy: SnippetCodingKeys.self, forKey: .snippet)
         channelTitle = try snippetContainer.decode(String.self, forKey: .channelTitle)
-        playlistTitle = try snippetContainer.decode(String.self, forKey: .playlistTitle)
+        videoTitle = try snippetContainer.decode(String.self, forKey: .videoTitle)
         //=====================resourceId========================
         let resourceIdContainer = try snippetContainer.nestedContainer(keyedBy: ResourceIdCodingKeys.self, forKey: .resourceId)
         videoId = try resourceIdContainer.decode(String.self, forKey: .videoId)
         //=====================thumbnails========================
         let thumbContainer = try snippetContainer.nestedContainer(keyedBy: ThumbnailsCodingKeys.self, forKey: .thumbnails)
         //=====================high==============================
-        let standardContainer = try thumbContainer.nestedContainer(keyedBy: StandardcodingKeys.self, forKey: .high)
+        let standardContainer = try thumbContainer.nestedContainer(keyedBy: HighCodingKeys.self, forKey: .high)
         imgUrl = try standardContainer.decode(String.self, forKey: .imgUrl)
     }
 }
@@ -180,22 +266,6 @@ class VideoDataModel: VideoDataModelProtocol {
         return key ?? ""
     }
     
-//    private func createURLForChannels(_ chId: String) -> String {
-//        let headRL = VideoURLs.channels.rawValue
-//        let apiKey = self.encodeApiKey(apiKey)
-//        let qStr = "&id=\(chId)"
-//        let resultURL = headRL + apiKey + qStr
-//        return resultURL
-//    }
-    
-//    private func createURLForPlayList(_ plId: String) -> String {
-//        let headRL = VideoURLs.playList.rawValue
-//        let apiKey = self.encodeApiKey(apiKey)
-//        let qStr = "&playlistId=\(plId)"
-//        let resultURL = headRL + apiKey + qStr
-//        return resultURL
-//    }
-    
     func createUrl(_ headUrl: String, _ queryId: String, _ id: String) -> String {
         let head = headUrl
         let apiKey = self.encodeApiKey(apiKey)
@@ -203,9 +273,39 @@ class VideoDataModel: VideoDataModelProtocol {
         return head + apiKey + qStr
     }
     
-    func getPlaylist(_ plId: String, completion: @escaping (PlaylistModel) -> Void) {
-        let cUrl = self.createUrl(VideoURLs.playlist.rawValue, "&playlistId=", plId)
+    func getVideo(_ vId: String, completion: @escaping (VideoModel) -> Void) {
+        let cUrl = self.createUrl(VideoURLs.video.rawValue, "&id=", vId)
 //        print(cUrl)
+
+        if let url = URL(string: cUrl) {
+            let decoder = JSONDecoder()
+            let request = AF.request(url)
+
+            request.validate().responseDecodable(of: VideoModel.self, decoder: decoder) { data in
+                if let uValue = data.value {
+                    completion(uValue)
+                }
+            }
+        }
+    }
+    
+    func getPlaylistTitle(_ plId: String, completion: @escaping (PlayListTitleModel) -> Void) {
+        let cUrl = self.createUrl(VideoURLs.playlistTitle.rawValue, "&id=", plId)
+        
+        if let url = URL(string: cUrl) {
+            let decoder = JSONDecoder()
+            let request = AF.request(url)
+            
+            request.validate().responseDecodable(of: PlayListTitleModel.self, decoder: decoder) { data in
+                if let uValue = data.value {
+                    completion(uValue)
+                }
+            }
+        }
+    }
+    
+    func getPlaylistItems(_ plId: String, completion: @escaping (PlaylistModel) -> Void) {
+        let cUrl = self.createUrl(VideoURLs.playlist.rawValue, "&playlistId=", plId)
         
         if let url = URL(string: cUrl) {
             let decoder = JSONDecoder()
@@ -236,9 +336,9 @@ class VideoDataModel: VideoDataModelProtocol {
     
     func decodeModelFromData(_ channelId: String, completion: @escaping (ChannelModel, PlaylistModel) -> Void) {
         self.getChannel(channelId) { channelModel in
-            self.getPlaylist(channelModel.items[0].playListId) { playlistModel in
-                completion(channelModel, playlistModel)
-            }
+//            self.getPlaylist(channelModel.items[0].playListId) { playlistModel in
+//                completion(channelModel, playlistModel)
+//            }
         }
     }
     
@@ -246,8 +346,12 @@ class VideoDataModel: VideoDataModelProtocol {
     
     
     func getData() {
-        let cUrl = self.createUrl(VideoURLs.playlist.rawValue, "&playlistId=", "PLh9bWygNPws3eKPY1NEp4eC_buZVqXNQu")
-//        print(cUrl)
+        let cUrl = self.createUrl(VideoURLs.playlist.rawValue, "&playlistId=", "UUu5jfQcpRLm9xhmlSd5S8xw")
+        print(cUrl)
+        
+//        let u = "https://youtube.googleapis.com/youtube/v3/videos?part=snippet&part=statistics&part=player&id=x31vGxoI7go&key=AIzaSyBahXEiv91xvS7j9fZijlRMMHT59QMwRRM"
+//        print(u)
+        
         
         let req = AF.request(cUrl)
 
@@ -266,6 +370,5 @@ class VideoDataModel: VideoDataModelProtocol {
 //            print("Data: \(data)")
 //
 //        }
-//
 //    }
 }

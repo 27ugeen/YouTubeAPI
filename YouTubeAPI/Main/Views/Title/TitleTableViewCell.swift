@@ -37,7 +37,7 @@ extension TitleTableViewCell {
         contentView.addSubview(titleLable)
         
         NSLayoutConstraint.activate([
-            titleLable.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            titleLable.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             titleLable.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
     }

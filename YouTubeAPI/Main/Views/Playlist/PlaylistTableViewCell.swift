@@ -33,12 +33,13 @@ class PlaylistTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     //MARK: - subviews
-    private lazy var playlistTitleLabel: UILabel = {
+    lazy var playlistTitleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Playlist Name"
         label.textColor = .white
         label.font = .systemFont(ofSize: 23, weight: .bold)
+//        label.numberOfLines = 3
         return label
     }()
     
@@ -64,9 +65,7 @@ extension PlaylistTableViewCell {
         contentView.backgroundColor = .clear
         contentView.addSubview(playlistTitleLabel)
         contentView.addSubview(playlistCollectionView)
-        //TODO: - relocate
-        self.playlistTitleLabel.text = model?[0].playlistTitle
-        
+
         playlistCollectionView.register(PlaylistCollectionViewCell.self, forCellWithReuseIdentifier: plItemId)
         
         playlistCollectionView.dataSource = self
@@ -90,7 +89,8 @@ extension PlaylistTableViewCell: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return model?.count ?? 1
+//        return model?.count ?? 1
+        return 10
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -99,24 +99,21 @@ extension PlaylistTableViewCell: UICollectionViewDataSource {
         let m = model?[indexPath.item]
         
         cell.playlistImgView.image = m?.playlistImg
-        cell.videoNameLabel.text = m?.channelTitle ?? "Channel"
-//        cell.viewsCountLabel.text = "\(m?.)"
+        cell.videoNameLabel.text = m?.videoTitle
         
-//        let position: Position = cPosition ?? .mid
-//        switch position {
-//        case .mid:
-//            self.playlistTitleLabel.text = model?[0].playlistTitle
-//        case .bot:
-//            self.playlistTitleLabel.text = model?[0].playlistTitle
-//        }
-        
-        //        cell.backgroundColor = .blue
-        //        cell.playlistImgView.image = UIImage(named: "play")
-        //        cell.viewsCountLabel.text = "teeeeest"
-        
-        //        cell.chNameLabel.text = model?[indexPath.item].channelTittle ?? "Title channel"
-        //        cell.subscribersLabel.text = "\(model?[indexPath.item].subscribers ?? "0") subscribers"
-        
+        let position: Position = cPosition ?? .mid
+        switch position {
+        case .mid:
+            cell.viewsCountLabel.text = "\(m?.viewsCount ?? "nil") views"
+            cell.playlistImgView.widthAnchor.constraint(equalToConstant: 160).isActive = true
+            cell.playlistImgView.heightAnchor.constraint(equalToConstant: 70).isActive = true
+        case .bot:
+            //TODO: - review contentMode
+            cell.playlistImgView.contentMode = .center
+            cell.viewsCountLabel.text = "\(m?.viewsCount ?? "nil") views"
+            cell.playlistImgView.widthAnchor.constraint(equalToConstant: 135).isActive = true
+            cell.playlistImgView.heightAnchor.constraint(equalToConstant: 134).isActive = true
+        }
         return cell
     }
 }
