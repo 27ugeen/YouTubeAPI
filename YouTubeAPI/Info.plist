@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSCameraUsageDescription</key>
+	<string>&quot;true&quot;</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>&quot;true&quot;</string>
 	<key>API_KEY</key>
 	<data>QUl6YVN5QmFoWEVpdjkxeHZTN2o5ZlppamxSTU1IVDU5UU13UlJN</data>
 </dict>

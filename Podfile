@@ -7,5 +7,7 @@ target 'YouTubeAPI' do
 
   # Pods for YouTubeAPI
 pod 'Alamofire', '~> 5.6.1'
+pod 'youtube-ios-player-helper'
+pod 'YouTubePlayer'
 
 end

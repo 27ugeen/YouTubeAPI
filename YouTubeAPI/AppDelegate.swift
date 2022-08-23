@@ -18,7 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let mainVM = MainViewModel(dataModel: dataM)
         
         let mainVC = MainViewController(viewModel: mainVM)
-        let navigationController = UINavigationController(rootViewController: mainVC)
+        let pl = PlayerViewController()
+        let navigationController = UINavigationController(rootViewController: pl)
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = navigationController
