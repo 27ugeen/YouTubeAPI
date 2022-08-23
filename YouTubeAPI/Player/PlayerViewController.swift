@@ -117,15 +117,17 @@ extension PlayerViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let topBtnCell = tableView.dequeueReusableCell(withIdentifier: topBtnCell) as! PlayerShowHideTableViewCell
-        let videoCell = tableView.dequeueReusableCell(withIdentifier: videoCellId) as! PlayerVideoTableViewCell
+        
+        
 //        let controlCell = tableView.dequeueReusableCell(withIdentifier: controlCellId) as! PlayerControlTableViewCell
         
         switch indexPath.row {
         case 0:
+            let topBtnCell = tableView.dequeueReusableCell(withIdentifier: topBtnCell) as! PlayerShowHideTableViewCell
             topBtnCell.backgroundColor = .black
             return topBtnCell
         case 1:
+            let videoCell = tableView.dequeueReusableCell(withIdentifier: videoCellId) as! PlayerVideoTableViewCell
             videoCell.backgroundColor = .clear
             videoCell.selectionStyle = .none
             return videoCell

@@ -80,6 +80,7 @@ class MainViewModel {
     
     func getAllPlaylists(_ playlistId: String, completion: @escaping ([PlaylistItemsStub]) -> Void) {
         dataModel.getPlaylistItems(playlistId) { data in
+            self.playlistItems = []
             data.items.forEach { item in
                 
                 var plImg: UIImage?

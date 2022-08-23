@@ -313,6 +313,7 @@ class VideoDataModel: VideoDataModelProtocol {
             
             request.validate().responseDecodable(of: PlaylistModel.self, decoder: decoder) { data in
                 if let uValue = data.value {
+                    
                     completion(uValue)
                 }
             }

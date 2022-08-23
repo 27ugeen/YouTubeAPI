@@ -20,7 +20,11 @@ class MainViewController: UIViewController {
         didSet { tableView.reloadData() }
     }
     
-    private var playlists: [PlaylistItemsStub]? {
+    private var playlists: [PlaylistItemsStub]? 
+//        didSet { tableView.reloadData() }
+//    }
+    
+    private var playlists2: [PlaylistItemsStub]? {
         didSet { tableView.reloadData() }
     }
     
@@ -58,9 +62,17 @@ class MainViewController: UIViewController {
     
     //MARK: - methods
     private func getPlaylist() {
-        mainVM.getAllPlaylists(PlayListsId.vevo.rawValue) { pl in
+        
+        mainVM.getAllPlaylists(PlayListsId.avb.rawValue) { pl in
             self.playlists = pl
+
+                self.mainVM.getAllPlaylists(PlayListsId.vevo.rawValue) { pl2 in
+                    self.playlists2 = pl2
+                }
+            
+
         }
+        
     }
     
     private func getChannels() {
@@ -117,8 +129,8 @@ extension MainViewController: UITableViewDataSource {
         case 3:
             plBotCell.selectionStyle = .none
             plBotCell.cPosition = .bot
-            plBotCell.model = self.playlists
-            plBotCell.playlistTitleLabel.text = self.playlists?[0].playlistTitle
+            plBotCell.model = self.playlists2
+            plBotCell.playlistTitleLabel.text = self.playlists2?[0].playlistTitle
             return plBotCell
         default:
             return bannerCell
