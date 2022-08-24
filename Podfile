@@ -8,5 +8,6 @@ target 'YouTubeAPI' do
   # Pods for YouTubeAPI
 pod 'Alamofire', '~> 5.6.1'
 pod 'YouTubePlayer'
+pod 'BonsaiController'
 
 end

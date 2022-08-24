@@ -43,8 +43,8 @@ class PlayerViewController: UIViewController {
         setupViews()
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         self.timer.invalidate()
         self.changeTitleAction?()
     }
@@ -258,10 +258,10 @@ class PlayerViewController: UIViewController {
                         let min = String(format: "%02d", Int(restDur) / 60)
                         self.endTimeLabel.text = "-\(min):\(sec)"
                         //TODO: - need review taking duration of video
-                        //                        print("TRACK: \(Int(restDur))")
-                        //                        if Int(restDur) == 0 {
-                        //                            self.nextTapped()
-                        //                        }
+                        //print("TRACK: \(Int(restDur))")
+                        //if Int(restDur) == 0 {
+                        //  self.nextTapped()
+                        //}
                     }
                 }
             }
@@ -280,7 +280,7 @@ class PlayerViewController: UIViewController {
     
     @objc private func topBtnTapped() {
         print("top tap")
-        //        self.viewDidDisappear(true)
+        self.dismiss(animated: true)
     }
     
     @objc private func playPauseTapped() {

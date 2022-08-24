@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import BonsaiController
 
 class MainViewController: UIViewController {
     //MARK: - props
@@ -49,6 +50,7 @@ class MainViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        overrideUserInterfaceStyle = .dark
         configureNavigationBar()
     }
     //MARK: - subviews
@@ -102,13 +104,18 @@ class MainViewController: UIViewController {
         navigationController.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .automatic
         self.navigationItem.title = "YouTube API"
+        //        let textAttributes = [NSAttributedString.Key.foregroundColor: UIColor.red]
+        //        navigationController.navigationBar.titleTextAttributes = textAttributes
         navigationController.navigationBar.sizeToFit()
     }
     
     private func openPlayer() {
         self.navigationItem.title = "My Music"
+        
         let plVC = PlayerViewController(playerVM: self.playerVM,
                                         playlistId: self.channels?[pageIdx ?? 0].playListId ?? "")
+        plVC.transitioningDelegate = self
+        plVC.modalPresentationStyle = .custom
         plVC.changeTitleAction = {
             self.navigationItem.title = "YouTube API"
         }
@@ -204,4 +211,15 @@ extension MainViewController: UITableViewDelegate {
         }
     }
 }
-
+//MARK: - BonsaiControllerDelegate
+extension MainViewController: BonsaiControllerDelegate {
+    // return the frame of your Bonsai View Controller
+    func frameOfPresentedView(in containerViewFrame: CGRect) -> CGRect {
+        return CGRect(origin: CGPoint(x: containerViewFrame.width * 0.01, y: containerViewFrame.height * 0.17), size: CGSize(width: containerViewFrame.width * 0.98, height: containerViewFrame.height * 0.83))
+    }
+    // return a Bonsai Controller with SlideIn or Bubble transition animator
+    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        // Slide animation from .left, .right, .top, .bottom
+        return BonsaiController(fromDirection: .bottom, backgroundColor: UIColor(white: 0, alpha: 0.5), presentedViewController: presented, delegate: self)
+    }
+}

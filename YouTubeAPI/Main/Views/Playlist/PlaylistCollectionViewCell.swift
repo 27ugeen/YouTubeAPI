@@ -65,9 +65,6 @@ extension PlaylistCollectionViewCell {
             playlistImgView.topAnchor.constraint(equalTo: contentView.topAnchor),
             playlistImgView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             
-//            playlistImgView.widthAnchor.constraint(equalToConstant: 160),
-//            playlistImgView.heightAnchor.constraint(equalToConstant: 70),
-            
             videoNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             videoNameLabel.topAnchor.constraint(equalTo: playlistImgView.bottomAnchor, constant: 9),
             

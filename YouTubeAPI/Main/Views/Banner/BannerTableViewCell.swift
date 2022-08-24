@@ -71,7 +71,6 @@ class BannerTableViewCell: UITableViewCell {
     }
     
     @objc private func autoScroll() {
-//        print("timer fire!")
         //TODO: - looks like a pice of shit... need fix the logic or remove to mainVC
         for cell in carouselCollectionView.visibleCells {
             let cIndexPath: IndexPath? = carouselCollectionView.indexPath(for: cell)
@@ -135,7 +134,7 @@ extension BannerTableViewCell: UICollectionViewDataSource {
         cell.goToParrentsCellAction = {
             self.goToPlayerAction?(indexPath.item)
         }
-
+        
         return cell
     }
 }

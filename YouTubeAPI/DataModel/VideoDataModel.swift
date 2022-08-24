@@ -17,15 +17,17 @@ enum VideoURLs: String {
 
 enum ChannelsId: String, CaseIterable {
     case arminVanBuuren = "UCu5jfQcpRLm9xhmlSd5S8xw"
-    case earthRelaxation = "UCS4jPUCax8d3f-uke--YXXQ"
     case travels = "UCc3Qxl2JWMyvEUpDIbWwzXA"
     case deepMode = "UCX-USfenzQlhrEJR1zD5IYw"
-//    case vevo = "UC2pmfLm7iq6Ov1UwYrWYkZA"
+    case sport = "UCb4_z-mud9YU0b0ine0vs1A"
+    //    case earthRelaxation = "UCS4jPUCax8d3f-uke--YXXQ"
+    //    case vevo = "UC2pmfLm7iq6Ov1UwYrWYkZA"
 }
 
 enum PlayListsId: String, CaseIterable {
-    case vevo = "PL9tY0BWXOZFvcTuePgQKjjbdTmCIn5SHW"
-    //v2 "PL9tY0BWXOZFv8JKRhQtU4elLD73E3kvvo"
+    case vevo = "PL9tY0BWXOZFu8MzzbNVtUvHs0cQ_gZ03m"
+    case sport = "PLchjfZeSTX5ZgpPf5mIeelFsuXAf1Z3NV"
+    //    case vevo2 = "PL9tY0BWXOZFv8JKRhQtU4elLD73E3kvvo"
     case avb = "UUu5jfQcpRLm9xhmlSd5S8xw"
 }
 
@@ -42,7 +44,7 @@ struct ChannelModel: Decodable {
 }
 
 struct ChannelItems: Decodable {
-
+    
     enum CodingKeys: String, CodingKey {
         case contentDetails
         case snippet
@@ -63,11 +65,11 @@ struct ChannelItems: Decodable {
         case thumbnails
         case title
     }
-
+    
     enum ThumbnailsCodingKeys: String, CodingKey {
         case hImgUrl = "high"
     }
-
+    
     let imgUrl: String
     enum ImgUrlCodingKeys: String, CodingKey {
         case imgUrl = "url"
@@ -114,7 +116,7 @@ struct VideoModel: Decodable {
 struct VideoItems: Decodable {
     
     enum CodingKeys: String, CodingKey {
-//        case player
+        //        case player
         case snippet
         case statistics
     }
@@ -126,7 +128,7 @@ struct VideoItems: Decodable {
     enum ThumbnailsCodingKeys: String, CodingKey {
         case high
     }
-
+    
     let imgUrl: String
     enum HighCodingKeys: String, CodingKey {
         case imgUrl = "url"
@@ -206,20 +208,20 @@ struct PlaylistItems: Decodable {
     enum SnippetCodingKeys: String, CodingKey {
         case channelTitle
         case videoTitle = "title"
-
+        
         case resourceId
         case thumbnails
     }
-
+    
     let videoId: String
     enum ResourceIdCodingKeys: String, CodingKey {
         case videoId
     }
-
+    
     enum ThumbnailsCodingKeys: String, CodingKey {
         case high
     }
-
+    
     let imgUrl: String
     enum HighCodingKeys: String, CodingKey {
         case imgUrl = "url"
@@ -275,12 +277,12 @@ class VideoDataModel: VideoDataModelProtocol {
     //TODO: - need put into one func
     func getVideo(_ vId: String, completion: @escaping (VideoModel) -> Void) {
         let cUrl = self.createUrl(VideoURLs.video.rawValue, "&id=", vId)
-//        print(cUrl)
-
+        //        print(cUrl)
+        
         if let url = URL(string: cUrl) {
             let decoder = JSONDecoder()
             let request = AF.request(url)
-
+            
             request.validate().responseDecodable(of: VideoModel.self, decoder: decoder) { data in
                 if let uValue = data.value {
                     completion(uValue)
@@ -332,22 +334,6 @@ class VideoDataModel: VideoDataModelProtocol {
                     completion(uValue)
                 }
             }
-        }
-    }
-    
-    func getData() {
-        let cUrl = self.createUrl(VideoURLs.playlist.rawValue, "&playlistId=", "UUu5jfQcpRLm9xhmlSd5S8xw")
-        print(cUrl)
-        
-//        let u = "https://youtube.googleapis.com/youtube/v3/videos?part=snippet&part=statistics&part=player&id=x31vGxoI7go&key=AIzaSyBahXEiv91xvS7j9fZijlRMMHT59QMwRRM"
-//        print(u)
-        
-        
-        let req = AF.request(cUrl)
-
-        req.responseJSON { data in
-            print(data)
-
         }
     }
 }

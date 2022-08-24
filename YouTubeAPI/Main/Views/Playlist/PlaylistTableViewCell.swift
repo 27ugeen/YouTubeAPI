@@ -39,7 +39,6 @@ class PlaylistTableViewCell: UITableViewCell {
         label.text = "Playlist Name"
         label.textColor = .white
         label.font = .systemFont(ofSize: 23, weight: .bold)
-//        label.numberOfLines = 3
         return label
     }()
     
@@ -65,7 +64,7 @@ extension PlaylistTableViewCell {
         contentView.backgroundColor = .clear
         contentView.addSubview(playlistTitleLabel)
         contentView.addSubview(playlistCollectionView)
-
+        
         playlistCollectionView.register(PlaylistCollectionViewCell.self, forCellWithReuseIdentifier: plItemId)
         
         playlistCollectionView.dataSource = self
@@ -89,8 +88,7 @@ extension PlaylistTableViewCell: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        return model?.count ?? 1
-        return 10
+        return model?.count ?? 10
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
