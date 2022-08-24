@@ -246,7 +246,7 @@ class PlayerViewController: UIViewController {
     @objc private func getCurTime() {
         videoPlayer.getCurrentTime { t in
             if let time = t {
-                print("timer: \(Int(time))")
+//                print("timer: \(Int(time))")
                 let secText = String(format: "%02d", Int(time) % 60)
                 let minText = String(format: "%02d", Int(time) / 60)
                 self.startTimeLabel.text = "\(minText):\(secText)"

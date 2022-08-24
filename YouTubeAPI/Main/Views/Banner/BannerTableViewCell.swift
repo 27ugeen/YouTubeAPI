@@ -57,6 +57,7 @@ class BannerTableViewCell: UITableViewCell {
         pageControl.translatesAutoresizingMaskIntoConstraints = false
         pageControl.pageIndicatorTintColor = .gray
         pageControl.currentPageIndicatorTintColor = .white
+        pageControl.isUserInteractionEnabled = false
         return pageControl
     }()
     
@@ -84,7 +85,6 @@ class BannerTableViewCell: UITableViewCell {
                 nIndexPath = IndexPath.init(row: 0, section: (cIndexPath?.section)!)
                 carouselCollectionView.scrollToItem(at: nIndexPath!, at: .left, animated: true)
             }
-            
         }
     }
 }
