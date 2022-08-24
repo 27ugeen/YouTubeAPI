@@ -73,12 +73,12 @@ extension PlaylistTableViewCell {
         
         NSLayoutConstraint.activate([
             playlistTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 19),
-            playlistTitleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
+            playlistTitleLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
             
             playlistCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             playlistCollectionView.topAnchor.constraint(equalTo: playlistTitleLabel.bottomAnchor, constant: 19),
             playlistCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            playlistCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            playlistCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20)
         ])
     }
 }

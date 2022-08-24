@@ -16,6 +16,8 @@ class BannerTableViewCell: UITableViewCell {
         didSet { carouselCollectionView.reloadData() }
     }
     
+    var goToPlayerAction: ((_ idx: Int) -> Void)?
+    
     private var currentPage = 0 {
         didSet {
             pageControl.currentPage = currentPage
@@ -108,7 +110,7 @@ extension BannerTableViewCell {
             
             pageControl.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             pageControl.topAnchor.constraint(equalTo: carouselCollectionView.bottomAnchor, constant: 5),
-            pageControl.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            pageControl.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20)
         ])
     }
 }
@@ -129,8 +131,11 @@ extension BannerTableViewCell: UICollectionViewDataSource {
         cell.chNameLabel.text = model?[indexPath.item].channelTittle ?? "Title channel"
         cell.subscribersLabel.text = "\(model?[indexPath.item].subscribers ?? "0") subscribers"
         cell.bannerImgView.image = model?[indexPath.item].channelImg
-
         
+        cell.goToParrentsCellAction = {
+            self.goToPlayerAction?(indexPath.item)
+        }
+
         return cell
     }
 }

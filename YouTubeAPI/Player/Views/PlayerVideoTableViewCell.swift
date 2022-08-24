@@ -6,45 +6,33 @@
 //
 
 import UIKit
-//import youtube_ios_player_helper
 import YouTubePlayer
-import AVFoundation
 
 class PlayerVideoTableViewCell: UITableViewCell {
     // MARK: - props
     static let cellId = "PlayerVideoTableViewCell"
     
-    var timer: Timer!
     var videoDuration: Double?
-    var audioPlayer = AVAudioPlayer()
+    
+    var nextVideoAction: (() -> Void)?
+    var prevVideoAction: (() -> Void)?
+
     
     //MARK: - init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(getCurTime), userInfo: nil, repeats: true)
-//        videoPlayer.addObserver(self, forKeyPath: "Playing", options: .new, context: nil)
-        
+
+        setTimer()
         setupViews()
-        
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-//    override func prepareForReuse() {
-//        super.prepareForReuse()
+//    deinit {
 //        timer.invalidate()
-//        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(getCurTime), userInfo: nil, repeats: true)
 //    }
-//    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-//        if keyPath == "Playing" {
-//            print(change)
-//
-//        }
-//    }
-    
     //MARK: - subviews
     private lazy var videoPlayer: YouTubePlayerView = {
         let view = YouTubePlayerView()
@@ -52,19 +40,11 @@ class PlayerVideoTableViewCell: UITableViewCell {
         return view
     }()
     
-//    private lazy var playPauseButton: UIButton = {
-//        let btn = UIButton()
-//        btn.translatesAutoresizingMaskIntoConstraints = false
-//        btn.setBackgroundImage(UIImage(named: "play_p"), for: .normal)
-//        btn.tintColor = .white
-//        btn.addTarget(self, action: #selector(playPauseTapped), for: .touchUpInside)
-//        return btn
-//    }()
-    
     private lazy var trackSlider: UISlider = {
         let slider = UISlider()
         slider.translatesAutoresizingMaskIntoConstraints = false
-//        slider.trackRect(forBounds: CGRect(origin: bounds.origin, size: CGSize(width: 3, height: 3)))
+        //TODO: - set slider height
+        //        slider.trackRect(forBounds: CGRect(origin: bounds.origin, size: CGSize(width: 3, height: 3)))
         slider.layer.cornerRadius = 4
         slider.minimumTrackTintColor = .white
         slider.maximumTrackTintColor = .white.withAlphaComponent(0.65)
@@ -78,7 +58,7 @@ class PlayerVideoTableViewCell: UITableViewCell {
     private lazy var startTimeLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "0:00"
+        label.text = "00:00"
         label.textColor = .white.withAlphaComponent(0.7)
         label.font = .systemFont(ofSize: 11, weight: .regular)
         return label
@@ -93,7 +73,7 @@ class PlayerVideoTableViewCell: UITableViewCell {
         return label
     }()
     
-    private lazy var titleVideoLabel: UILabel = {
+    lazy var titleVideoLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Title Vodeo Name Long Text Label in One Line"
@@ -102,7 +82,7 @@ class PlayerVideoTableViewCell: UITableViewCell {
         return label
     }()
     
-    private lazy var viewsCountLabel: UILabel = {
+    lazy var viewsCountLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "42424242 views"
@@ -145,8 +125,9 @@ class PlayerVideoTableViewCell: UITableViewCell {
         slider.minimumTrackTintColor = .white
         slider.maximumTrackTintColor = .white.withAlphaComponent(0.65)
         slider.thumbRect(forBounds: CGRect(x: 0, y: 0, width: 2, height: 12), trackRect: CGRect(x: 0, y: 0, width: 2, height: 12), value: 0)
-        
-        slider.addTarget(self, action: #selector(volumeChanged), for: .valueChanged)
+        slider.value = 0.5
+        //TODO: - didn't find how to connect to library yet...
+        //        slider.addTarget(self, action: #selector(volumeChanged), for: .valueChanged)
         return slider
     }()
     
@@ -154,7 +135,6 @@ class PlayerVideoTableViewCell: UITableViewCell {
         let view = UIImageView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.image = UIImage(named: "vol_min")
-        
         return view
     }()
     
@@ -162,32 +142,45 @@ class PlayerVideoTableViewCell: UITableViewCell {
         let view = UIImageView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.image = UIImage(named: "vol_max")
-        
         return view
     }()
     
     //MARK: - methods
-    
-    private func setTimer() {
-        if timer != nil {
-            timer.invalidate()
-        }
-        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(getCurTime), userInfo: nil, repeats: true)
+    func loadVideo(_ vId: String) {
+        videoPlayer.playerVars = ["controls" : 0 as AnyObject,
+                                  "showinfo" : 0 as AnyObject,
+                                  "playsinline" : 1 as AnyObject]
+        videoPlayer.loadVideoID(vId)
     }
     
-    private func loadVideo() {
+    private func playVideo() {
         videoPlayer.play()
+    }
+    
+    private func setTimer() {
+        var timer: Timer!
+        if timer != nil { timer.invalidate() }
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(getCurTime), userInfo: nil, repeats: true)
     }
     
     private func getDuration() {
         videoPlayer.getDuration { dur in
             if let duration = dur {
                 self.videoDuration = duration
-                let secText = Int(duration) % 60
+                let secText = String(format: "%02d", Int(duration) % 60)
                 let minText = String(format: "%02d", Int(duration) / 60)
                 print(duration)
                 self.endTimeLabel.text = "\(minText):\(secText)"
             }
+        }
+    }
+    
+    private func setupBtnsNextPrev() {
+        self.trackSlider.value = 0
+        self.setTimer()
+        self.getDuration()
+        if playPauseButton.currentBackgroundImage == UIImage(named: "play_p") {
+            playPauseButton.setBackgroundImage(UIImage(named: "pause"), for: .normal)
         }
     }
     
@@ -201,61 +194,56 @@ class PlayerVideoTableViewCell: UITableViewCell {
         }
     }
     
-    @objc private func volumeChanged() {
-        print("V: \(volumeSlider.value)")
-    }
-    
     @objc private func getCurTime() {
-
         videoPlayer.getCurrentTime { t in
+//            print("timer: \(t)")
             if let time = t {
-//                print("Time: \(Int(time))")
                 let secText = String(format: "%02d", Int(time) % 60)
                 let minText = String(format: "%02d", Int(time) / 60)
                 self.startTimeLabel.text = "\(minText):\(secText)"
                 if self.videoDuration != nil {
                     if let cDur = self.videoDuration {
                         self.trackSlider.value = Float(time / cDur)
+                        let restDur = cDur - time
+                        let sec = String(format: "%02d", Int(restDur) % 60)
+                        let min = String(format: "%02d", Int(restDur) / 60)
+                        self.endTimeLabel.text = "-\(min):\(sec)"
+                        //TODO: - need review taking duration of video
+//                        print("TRACK: \(Int(restDur))")
+//                        if Int(restDur) == 0 {
+//                            self.nextTapped()
+//                        }
                     }
                 }
-//                print("\(minText):\(secText)")
             }
         }
     }
     
     @objc private func playPauseTapped() {
-        print("tap2")
         if videoPlayer.ready {
             if videoPlayer.playerState != .Playing {
                 playPauseButton.setBackgroundImage(UIImage(named: "pause"), for: .normal)
-                videoPlayer.play()
-//                self.setTimer()
+                self.videoPlayer.play()
             } else {
-                videoPlayer.pause()
+                self.videoPlayer.pause()
                 playPauseButton.setBackgroundImage(UIImage(named: "play_p"), for: .normal)
-//                timer.invalidate()
             }
         }
     }
     
-    
-    
     @objc private func nextTapped() {
-        print("next video")
-        self.trackSlider.value = 0
-        self.setTimer()
-        self.getDuration()
-        videoPlayer.nextVideo()
+        self.setupBtnsNextPrev()
+        self.nextVideoAction?()
     }
     
     @objc private func prevTapped() {
-        print("prev video")
-        self.trackSlider.value = 0
-        self.setTimer()
-        self.getDuration()
-        videoPlayer.previousVideo()
+        self.setupBtnsNextPrev()
+        self.prevVideoAction?()
     }
-
+    
+    @objc private func volumeChanged() {
+        print("VS: \(volumeSlider.value)")
+    }
 }
 //MARK: - setupViews
 extension PlayerVideoTableViewCell {
@@ -274,15 +262,9 @@ extension PlayerVideoTableViewCell {
         contentView.addSubview(minVolView)
         contentView.addSubview(maxVolView)
         
-        videoPlayer.playerVars = ["controls" : 0 as AnyObject, "showinfo" : 0 as AnyObject, "playsinline" : 1 as AnyObject]
-//        videoPlayer.loadVideoID("x31vGxoI7go")
-        videoPlayer.loadPlaylistID("UUu5jfQcpRLm9xhmlSd5S8xw")
-        
-//        playerView.load(withVideoId: "x31vGxoI7go", playerVars: ["controls" : 0, "showinfo" : 0, "playsinline" : 1, "autohide" : 1])
         videoPlayer.delegate = self
         
         NSLayoutConstraint.activate([
-            
             videoPlayer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             videoPlayer.topAnchor.constraint(equalTo: contentView.topAnchor),
             videoPlayer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
@@ -338,36 +320,10 @@ extension PlayerVideoTableViewCell {
         ])
     }
 }
-//MARK: -
+//MARK: - YouTubePlayerDelegate
 extension PlayerVideoTableViewCell: YouTubePlayerDelegate {
-    
     func playerReady(_ videoPlayer: YouTubePlayerView) {
-
         self.getDuration()
-        self.loadVideo()
+        self.playVideo()
     }
-    
-    
-//    func playerStateChanged(_ videoPlayer: YouTubePlayerView, playerState: YouTubePlayerState) {
-//        switch playerState {
-//
-//        case .Unstarted:
-//            <#code#>
-//        case .Ended:
-//            <#code#>
-//        case .Playing:
-//            <#code#>
-//        case .Paused:
-//            <#code#>
-//        case .Buffering:
-//            <#code#>
-//        case .Queued:
-//            <#code#>
-//        }
-//    }
-    
-    func playerQualityChanged(_ videoPlayer: YouTubePlayerView, playbackQuality: YouTubePlaybackQuality) {
-        
-    }
-    
 }

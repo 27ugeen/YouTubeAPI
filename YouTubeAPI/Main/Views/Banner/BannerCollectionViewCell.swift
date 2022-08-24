@@ -11,6 +11,8 @@ class BannerCollectionViewCell: UICollectionViewCell {
     // MARK: - props
     static let itemId = "BannerCollectionViewCell"
     
+    var goToParrentsCellAction: (() ->Void)?
+    
     // MARK: - init
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -25,15 +27,15 @@ class BannerCollectionViewCell: UICollectionViewCell {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .clear
+        view.isUserInteractionEnabled = true
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(goToPlayer)))
         return view
     }()
     
     lazy var bannerImgView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        
         imageView.backgroundColor = .white
-        
         imageView.layer.cornerRadius = 4
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
@@ -69,6 +71,12 @@ class BannerCollectionViewCell: UICollectionViewCell {
         textLabel.textColor = UIColor(rgb: 0x9D9D9D)
         return textLabel
     }()
+    
+    //MARK: - methods
+    @objc private func goToPlayer() {
+        print("go from banner")
+        self.goToParrentsCellAction?()
+    }
 }
 //MARK: - setupViews
 extension BannerCollectionViewCell {

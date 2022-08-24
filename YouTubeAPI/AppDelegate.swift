@@ -16,17 +16,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let dataM = VideoDataModel()
         let mainVM = MainViewModel(dataModel: dataM)
+        let plVM = PlayerViewModel(dataModel: dataM)
         
-        let mainVC = MainViewController(viewModel: mainVM)
-        let pl = PlayerViewController()
-        let navigationController = UINavigationController(rootViewController: pl)
+        let mainVC = MainViewController(viewModel: mainVM, playerVM: plVM)
+        let navigationController = UINavigationController(rootViewController: mainVC)
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
         return true
     }
-
-
 }
 

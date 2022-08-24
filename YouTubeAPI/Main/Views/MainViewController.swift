@@ -13,24 +13,25 @@ class MainViewController: UIViewController {
     private let bannerCellId = BannerTableViewCell.cellId
     private let plMidCellId = PlaylistTableViewCell.cellId
     private let plBotCellId = PlaylistTableViewCell.cellId
+    private let btnBotCellId = PlayerShowHideTableViewCell.cellId
     
     private let mainVM: MainViewModel
+    private let playerVM: PlayerViewModel
     
     private var channels: [ChannelItemsStub]? {
         didSet { tableView.reloadData() }
     }
     
-    private var playlists: [PlaylistItemsStub]? 
-//        didSet { tableView.reloadData() }
-//    }
+    private var playlistsMid: [PlaylistItemsStub]?
     
-    private var playlists2: [PlaylistItemsStub]? {
+    private var playlistsBot: [PlaylistItemsStub]? {
         didSet { tableView.reloadData() }
     }
     
     //MARK: - init
-    init(viewModel: MainViewModel) {
+    init(viewModel: MainViewModel, playerVM: PlayerViewModel) {
         self.mainVM = viewModel
+        self.playerVM = playerVM
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -40,15 +41,11 @@ class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        navigationController?.isNavigationBarHidden = true
-        
-        overrideUserInterfaceStyle = .dark
-        
+
         setupViews()
         
         getChannels()
-        getPlaylist()
+        getPlaylists()
     }
     //MARK: - subviews
     private let tableView: UITableView = {
@@ -61,18 +58,14 @@ class MainViewController: UIViewController {
     }()
     
     //MARK: - methods
-    private func getPlaylist() {
-        
-        mainVM.getAllPlaylists(PlayListsId.avb.rawValue) { pl in
-            self.playlists = pl
-
-                self.mainVM.getAllPlaylists(PlayListsId.vevo.rawValue) { pl2 in
-                    self.playlists2 = pl2
-                }
+    private func getPlaylists() {
+        mainVM.getAllPlaylists(PlayListsId.avb.rawValue) { plMid in
+            self.playlistsMid = plMid
             
-
+            self.mainVM.getAllPlaylists(PlayListsId.vevo.rawValue) { plBot in
+                self.playlistsBot = plBot
+            }
         }
-        
     }
     
     private func getChannels() {
@@ -84,12 +77,16 @@ class MainViewController: UIViewController {
 //MARK: - setupViews
 extension MainViewController {
     private func setupViews() {
+        overrideUserInterfaceStyle = .dark
+        navigationController?.isNavigationBarHidden = true
+        
         view.addSubview(tableView)
         
         tableView.register(TitleTableViewCell.self, forCellReuseIdentifier: titleCellId)
         tableView.register(BannerTableViewCell.self, forCellReuseIdentifier: bannerCellId)
         tableView.register(PlaylistTableViewCell.self, forCellReuseIdentifier: plMidCellId)
         tableView.register(PlaylistTableViewCell.self, forCellReuseIdentifier: plBotCellId)
+        tableView.register(PlayerShowHideTableViewCell.self, forCellReuseIdentifier: btnBotCellId)
 
         tableView.dataSource = self
         tableView.delegate = self
@@ -105,7 +102,7 @@ extension MainViewController {
 //MARK: - UITableViewDataSource
 extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4
+        return 5
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -113,27 +110,38 @@ extension MainViewController: UITableViewDataSource {
         let bannerCell = tableView.dequeueReusableCell(withIdentifier: bannerCellId) as! BannerTableViewCell
         let plMidCell = tableView.dequeueReusableCell(withIdentifier: plMidCellId) as! PlaylistTableViewCell
         let plBotCell = tableView.dequeueReusableCell(withIdentifier: plBotCellId) as! PlaylistTableViewCell
+        let btnBotCell = tableView.dequeueReusableCell(withIdentifier: btnBotCellId) as! PlayerShowHideTableViewCell
         
         switch indexPath.row {
         case 0:
             return titleCell
         case 1:
             bannerCell.model = self.channels
+            bannerCell.goToPlayerAction = { idx in
+
+                let plVC = PlayerViewController(playerVM: self.playerVM,
+                                                playlistId: self.channels?[idx].playListId ?? "")
+                self.navigationController?.present(plVC, animated: true)
+            }
             return bannerCell
         case 2:
             plMidCell.selectionStyle = .none
             plMidCell.cPosition = .mid
-            plMidCell.model = self.playlists
-            plMidCell.playlistTitleLabel.text = self.playlists?[0].playlistTitle
+            plMidCell.model = self.playlistsMid
+            plMidCell.playlistTitleLabel.text = self.playlistsMid?[0].playlistTitle
             return plMidCell
         case 3:
             plBotCell.selectionStyle = .none
             plBotCell.cPosition = .bot
-            plBotCell.model = self.playlists2
-            plBotCell.playlistTitleLabel.text = self.playlists2?[0].playlistTitle
+            plBotCell.model = self.playlistsBot
+            plBotCell.playlistTitleLabel.text = self.playlistsBot?[0].playlistTitle
             return plBotCell
+        case 4:
+            btnBotCell.arrowView.image = UIImage(named: "arrow_top")
+            btnBotCell.selectionStyle = .none
+            return btnBotCell
         default:
-            return bannerCell
+            return UITableViewCell()
         }
     }
 }
@@ -142,22 +150,29 @@ extension MainViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.row {
         case 0:
-            return 42
+            return 48
         case 1:
-            return 200
+            return 220
         case 2:
             return 184
         case 3:
             return 248
+        case 4:
+            return 50
         default:
             return 0
         }
     }
     
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        if indexPath.row > 2 {
-//            self.goToDailyDetailAction?(indexPath.row - 3)
-//        }
-//    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.row {
+        case 1:
+            print("tap Banner")
+//            let plVC = PlayerViewController()
+//            self.navigationController?.present(plVC, animated: true)
+        default:
+            break
+        }
+    }
 }
 

@@ -19,8 +19,8 @@ enum ChannelsId: String, CaseIterable {
     case arminVanBuuren = "UCu5jfQcpRLm9xhmlSd5S8xw"
     case earthRelaxation = "UCS4jPUCax8d3f-uke--YXXQ"
     case travels = "UCc3Qxl2JWMyvEUpDIbWwzXA"
-//    case deepMode = "UCX-USfenzQlhrEJR1zD5IYw"
-    case vevo = "UC2pmfLm7iq6Ov1UwYrWYkZA"
+    case deepMode = "UCX-USfenzQlhrEJR1zD5IYw"
+//    case vevo = "UC2pmfLm7iq6Ov1UwYrWYkZA"
 }
 
 enum PlayListsId: String, CaseIterable {
@@ -272,7 +272,7 @@ class VideoDataModel: VideoDataModelProtocol {
         let qStr = "\(queryId)\(id)"
         return head + apiKey + qStr
     }
-    
+    //TODO: - need put into one func
     func getVideo(_ vId: String, completion: @escaping (VideoModel) -> Void) {
         let cUrl = self.createUrl(VideoURLs.video.rawValue, "&id=", vId)
 //        print(cUrl)
@@ -288,7 +288,7 @@ class VideoDataModel: VideoDataModelProtocol {
             }
         }
     }
-    
+    //TODO: - need put into one func
     func getPlaylistTitle(_ plId: String, completion: @escaping (PlayListTitleModel) -> Void) {
         let cUrl = self.createUrl(VideoURLs.playlistTitle.rawValue, "&id=", plId)
         
@@ -303,7 +303,7 @@ class VideoDataModel: VideoDataModelProtocol {
             }
         }
     }
-    
+    //TODO: - need put into one func
     func getPlaylistItems(_ plId: String, completion: @escaping (PlaylistModel) -> Void) {
         let cUrl = self.createUrl(VideoURLs.playlist.rawValue, "&playlistId=", plId)
         
@@ -319,7 +319,7 @@ class VideoDataModel: VideoDataModelProtocol {
             }
         }
     }
-    
+    //TODO: - need put into one func
     func getChannel(_ chId: String, completion: @escaping (ChannelModel) -> Void) {
         let cUrl = self.createUrl(VideoURLs.channel.rawValue, "&id=", chId)
         

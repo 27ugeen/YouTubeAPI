@@ -11,24 +11,34 @@ class PlayerViewController: UIViewController {
     //MARK: - props
     private let topBtnCell = PlayerShowHideTableViewCell.cellId
     private let videoCellId = PlayerVideoTableViewCell.cellId
-//    private let controlCellId = PlayerControlTableViewCell.cellId
-
+    
+    private let playlistId: String
+    private let playerVM: PlayerViewModel
+    
+    var videoIdx: Int = 0 {
+        didSet { tableView.reloadData() }
+    }
+    
+    private var videos: [VideoItemsStub]? {
+        didSet { tableView.reloadData() }
+    }
+    
     //MARK: - init
+    init(playerVM: PlayerViewModel, playlistId: String) {
+        self.playerVM = playerVM
+        self.playlistId = playlistId
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        nil
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let gradient: CAGradientLayer = CAGradientLayer()
-        gradient.colors = [UIColor(rgb: 0xEE4289).cgColor, UIColor(rgb: 0x630BF5).cgColor]
-        gradient.startPoint = CGPoint(x: 0, y: 0)
-        gradient.endPoint = CGPoint(x: 0, y: 1)
-        gradient.frame = view.bounds
-        
-        wrapperView.layer.addSublayer(gradient)
-        
-        navigationController?.isNavigationBarHidden = true
-        
-        tableView.backgroundColor = .clear
-        
+        getVideoArr()
+        addGradient()
         setupViews()
     }
     //MARK: - subviews
@@ -43,56 +53,63 @@ class PlayerViewController: UIViewController {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.showsVerticalScrollIndicator = false
-//        tableView.isScrollEnabled = false
+        //        tableView.isScrollEnabled = false
         tableView.separatorStyle = .none
         return tableView
     }()
-//    private lazy var wrapperView: WKWebView = {
-//        let view = WKWebView()
-//        view.translatesAutoresizingMaskIntoConstraints = false
-//        view.backgroundColor = .blue
-//        view.scrollView.isScrollEnabled = false
-//
-//        return view
-//    }()
     
     private lazy var topButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 12
         button.layer.backgroundColor = UIColor(rgb: 0xE9408D).cgColor
-//        button.addTarget(self, action: #selector(btnTapped), for: .touchUpInside)
+        //        button.addTarget(self, action: #selector(btnTapped), for: .touchUpInside)
         return button
     }()
     
-//    private lazy var arrowView: UIImageView = 
+    //MARK: - methods
+    private func addGradient() {
+        let gradient: CAGradientLayer = CAGradientLayer()
+        gradient.colors = [UIColor(rgb: 0xEE4289).cgColor, UIColor(rgb: 0x630BF5).cgColor]
+        gradient.startPoint = CGPoint(x: 0, y: 0)
+        gradient.endPoint = CGPoint(x: 0, y: 1)
+        gradient.frame = view.bounds
+        tableView.backgroundColor = .clear
+        wrapperView.layer.addSublayer(gradient)
+    }
     
-
+    private func getVideoArr() {
+        playerVM.getVideos(playlistId) { videoArr in
+            self.videos = videoArr
+        }
+    }
     
-
-//    private lazy var bottomView: WKWebView = {
-//        let view = WKWebView()
-//        view.translatesAutoresizingMaskIntoConstraints = false
-//        view.backgroundColor = .blue
-//        view.clipsToBounds = true
-//        view.scrollView.isScrollEnabled = false
-//
-//        return view
-//    }()
+    private func playNextVideo() {
+        if self.videoIdx < (self.videos?.count ?? 1) - 1 {
+            self.videoIdx += 1
+        } else {
+            self.videoIdx = 0
+        }
+    }
     
-
-
+    private func playPrevVideo() {
+        if self.videoIdx > 0 {
+            self.videoIdx -= 1
+        } else {
+            self.videoIdx = (self.videos?.count ?? 1) - 1
+        }
+    }
 }
 //MARK: - setupViews
 extension PlayerViewController {
     private func setupViews() {
+        navigationController?.isNavigationBarHidden = true
         view.addSubview(wrapperView)
         wrapperView.addSubview(tableView)
         
         tableView.register(PlayerShowHideTableViewCell.self, forCellReuseIdentifier: topBtnCell)
         tableView.register(PlayerVideoTableViewCell.self, forCellReuseIdentifier: videoCellId)
-//        tableView.register(PlayerControlTableViewCell.self, forCellReuseIdentifier: controlCellId)
-
+        
         tableView.dataSource = self
         tableView.delegate = self
         
@@ -106,7 +123,6 @@ extension PlayerViewController {
             tableView.topAnchor.constraint(equalTo: wrapperView.topAnchor),
             tableView.trailingAnchor.constraint(equalTo: wrapperView.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: wrapperView.bottomAnchor)
-            
         ])
     }
 }
@@ -117,27 +133,29 @@ extension PlayerViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        
-//        let controlCell = tableView.dequeueReusableCell(withIdentifier: controlCellId) as! PlayerControlTableViewCell
-        
         switch indexPath.row {
         case 0:
             let topBtnCell = tableView.dequeueReusableCell(withIdentifier: topBtnCell) as! PlayerShowHideTableViewCell
             topBtnCell.backgroundColor = .black
+            topBtnCell.selectionStyle = .none
             return topBtnCell
         case 1:
             let videoCell = tableView.dequeueReusableCell(withIdentifier: videoCellId) as! PlayerVideoTableViewCell
+            
+            let v = self.videos?[self.videoIdx]
+            
+            videoCell.loadVideo(v?.videoId ?? "nil")
+            videoCell.titleVideoLabel.text = "\(v?.videoTitle ?? "nil")"
+            videoCell.viewsCountLabel.text = "\(v?.viewsCount ?? "nil") views"
+            videoCell.nextVideoAction = {
+                self.playNextVideo()
+            }
+            videoCell.prevVideoAction = {
+                self.playPrevVideo()
+            }
             videoCell.backgroundColor = .clear
             videoCell.selectionStyle = .none
             return videoCell
-//        case 2:
-//            controlCell.backgroundColor = .clear
-//            controlCell.selectionStyle = .none
-////            controlCell.playPauseAction = {
-////                videoCell.playerPause()
-////            }
-//            return controlCell
         default:
             return UITableViewCell()
         }
@@ -150,20 +168,17 @@ extension PlayerViewController: UITableViewDelegate {
         case 0:
             return 50
         case 1:
-            //TODO: - fix it!
+            //TODO: - need to fix it!
             return UIScreen.main.bounds.height - 50
-//            return 300
-//        case 2:
-//            //TODO: - fix it!!!
-//            return UIScreen.main.bounds.height - 285
         default:
             return 0
         }
     }
     
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        if indexPath.row > 2 {
-//            self.goToDailyDetailAction?(indexPath.row - 3)
-//        }
-//    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.row == 0 {
+            print("tap pl")
+            self.navigationController?.dismiss(animated: true)
+        }
+    }
 }

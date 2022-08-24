@@ -70,7 +70,7 @@ class MainViewModel {
                                                    subscribers: m.subscriberCount)
                     self.channelItems.append(newItem)
                     
-                    if self.channelItems.count == 4 {
+                    if self.channelItems.count == ChannelsId.allCases.count {
                         completion(self.channelItems)
                     }
                 }

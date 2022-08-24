@@ -31,7 +31,7 @@ class PlayerShowHideTableViewCell: UITableViewCell {
         return view
     }()
     
-    private lazy var arrowView: UIImageView = {
+    lazy var arrowView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(named: "arrow_bot")
