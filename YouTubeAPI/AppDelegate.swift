@@ -19,7 +19,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let plVM = PlayerViewModel(dataModel: dataM)
         
         let mainVC = MainViewController(viewModel: mainVM, playerVM: plVM)
+//        let plVC = PlayerViewController(playerVM: plVM, playlistId: "UUu5jfQcpRLm9xhmlSd5S8xw")
         let navigationController = UINavigationController(rootViewController: mainVC)
+        navigationController.navigationBar.prefersLargeTitles = true
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = navigationController
