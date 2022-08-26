@@ -7,11 +7,13 @@
 
 import UIKit
 import YouTubePlayer
+import MediaPlayer
 
 class PlayerViewController: UIViewController {
     //MARK: - props
     private let playlistId: String
     private let playerVM: PlayerViewModel
+    private let volumeView: MPVolumeView
     
     private var videoDuration: Double?
     private var videoIdx: Int = 0
@@ -24,9 +26,10 @@ class PlayerViewController: UIViewController {
     }
     
     //MARK: - init
-    init(playerVM: PlayerViewModel, playlistId: String) {
+    init(playerVM: PlayerViewModel, playlistId: String, volumeView: MPVolumeView) {
         self.playerVM = playerVM
         self.playlistId = playlistId
+        self.volumeView = volumeView
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -49,11 +52,11 @@ class PlayerViewController: UIViewController {
         self.changeTitleAction?()
     }
     //MARK: - subviews
+    
     private lazy var topButton: UIButton = {
         let btn = UIButton()
         btn.translatesAutoresizingMaskIntoConstraints = false
         btn.layer.backgroundColor = UIColor(rgb: 0xE9408D).cgColor
-        //        btn.setBackgroundImage(UIImage(named: "arrow_bot"), for: .normal)
         btn.layer.cornerRadius = 20
         btn.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         btn.addTarget(self, action: #selector(topBtnTapped), for: .touchUpInside)
@@ -318,7 +321,7 @@ class PlayerViewController: UIViewController {
     }
     
     @objc private func volumeChanged() {
-        print("VS: \(volumeSlider.value)")
+        volumeView.setVolume(volumeSlider.value)
     }
 }
 //MARK: - setupViews

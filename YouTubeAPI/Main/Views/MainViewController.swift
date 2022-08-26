@@ -7,6 +7,7 @@
 
 import UIKit
 import BonsaiController
+import MediaPlayer
 
 class MainViewController: UIViewController {
     //MARK: - props
@@ -16,6 +17,7 @@ class MainViewController: UIViewController {
     
     private let mainVM: MainViewModel
     private let playerVM: PlayerViewModel
+    private let volumeView: MPVolumeView
     
     private var pageIdx: Int?
     
@@ -30,9 +32,10 @@ class MainViewController: UIViewController {
     }
     
     //MARK: - init
-    init(viewModel: MainViewModel, playerVM: PlayerViewModel) {
+    init(viewModel: MainViewModel, playerVM: PlayerViewModel, volumeView: MPVolumeView) {
         self.mainVM = viewModel
         self.playerVM = playerVM
+        self.volumeView = volumeView
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -113,7 +116,7 @@ class MainViewController: UIViewController {
         self.navigationItem.title = "My Music"
         
         let plVC = PlayerViewController(playerVM: self.playerVM,
-                                        playlistId: self.channels?[pageIdx ?? 0].playListId ?? "")
+                                        playlistId: self.channels?[pageIdx ?? 0].playListId ?? "", volumeView: self.volumeView)
         plVC.transitioningDelegate = self
         plVC.modalPresentationStyle = .custom
         plVC.changeTitleAction = {
