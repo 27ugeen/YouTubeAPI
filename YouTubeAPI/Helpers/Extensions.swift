@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import MediaPlayer
 
 extension UIColor {
     convenience init(red: Int, green: Int, blue: Int, a: CGFloat = 1.0) {
@@ -25,5 +26,16 @@ extension UIColor {
             blue: rgb & 0xFF,
             a: a
         )
+    }
+}
+
+extension MPVolumeView {
+    func setVolume(_ volume: Float) {
+        let volumeView = MPVolumeView()
+        let slider = volumeView.subviews.first(where: { $0 is UISlider }) as? UISlider
+        
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.01) {
+            slider?.value = volume
+        }
     }
 }

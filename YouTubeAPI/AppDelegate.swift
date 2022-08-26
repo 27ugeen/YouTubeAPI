@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MediaPlayer
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -17,8 +18,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let dataM = VideoDataModel()
         let mainVM = MainViewModel(dataModel: dataM)
         let plVM = PlayerViewModel(dataModel: dataM)
+        let volumeView = MPVolumeView()
         
-        let mainVC = MainViewController(viewModel: mainVM, playerVM: plVM)
+        let mainVC = MainViewController(viewModel: mainVM, playerVM: plVM, volumeView: volumeView)
         
         let navigationController = UINavigationController(rootViewController: mainVC)
         navigationController.navigationBar.prefersLargeTitles = true
