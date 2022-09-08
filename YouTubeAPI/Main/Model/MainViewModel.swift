@@ -38,10 +38,9 @@ class MainViewModel {
     private func getChannelsArrModel(completion: @escaping ([ChannelModel]) -> Void) {
         var channelModelArr: [ChannelModel] = []
         ChannelsId.allCases.forEach { channel in
-            dataModel.getChannel(channel.rawValue) { data in
+            dataModel.getVideoData(VideoURLs.channel.rawValue, "&id=", channel.rawValue) { (data: ChannelModel) in
                 channelModelArr.append(data)
                 if channelModelArr.count == ChannelsId.allCases.count {
-                    
                     completion(channelModelArr)
                 }
             }
@@ -57,7 +56,7 @@ class MainViewModel {
                 let group = DispatchGroup()
                 
                 group.enter()
-                self.dataModel.getPlaylistItems(m.playListId) { data in
+                self.dataModel.getVideoData(VideoURLs.playlist.rawValue, "&playlistId=", m.playListId) { (data: PlaylistModel) in
                     self.getImgFromUrl(data.items[0].imgUrl) { img in
                         chImg = img
                         group.leave()
@@ -79,7 +78,7 @@ class MainViewModel {
     }
     
     func getAllPlaylists(_ playlistId: String, completion: @escaping ([PlaylistItemsStub]) -> Void) {
-        dataModel.getPlaylistItems(playlistId) { data in
+        dataModel.getVideoData(VideoURLs.playlist.rawValue, "&playlistId=", playlistId) { (data: PlaylistModel) in
             self.playlistItems = []
             data.items.forEach { item in
                 
@@ -95,16 +94,15 @@ class MainViewModel {
                     group.leave()
                 }
                 group.enter()
-                self.dataModel.getPlaylistTitle(playlistId) { data in
+                self.dataModel.getVideoData(VideoURLs.playlistTitle.rawValue, "&id=", playlistId) { (data: PlayListTitleModel) in
                     plTitle = data.items[0].playlistTitle
                     group.leave()
                 }
                 group.enter()
-                self.dataModel.getVideo(item.videoId) { data in
+                self.dataModel.getVideoData(VideoURLs.video.rawValue, "&id=", item.videoId) { (data: VideoModel) in
                     vCount = data.items[0].viewCount
                     group.leave()
                 }
-                
                 group.notify(queue: .main) {
                     let newPlaylist = PlaylistItemsStub(channelTitle: item.channelTitle,
                                                         playlistTitle: plTitle ?? "Playlist Title",

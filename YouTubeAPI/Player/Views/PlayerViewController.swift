@@ -317,8 +317,9 @@ class PlayerViewController: UIViewController {
         self.loadVideo(self.videos?[videoIdx].videoId ?? "nil")
     }
     
-    @objc private func volumeChanged() {
-        print("VS: \(volumeSlider.value)")
+    @objc private func volumeChanged(_ sender: UISlider) {
+//        print("VS: \(videoPlayer.player)")
+//        videoPlayer.player!.volume = sender.value / sender.maximumValue
     }
 }
 //MARK: - setupViews

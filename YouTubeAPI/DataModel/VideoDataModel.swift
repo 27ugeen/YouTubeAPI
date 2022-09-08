@@ -245,7 +245,10 @@ struct PlaylistItems: Decodable {
 }
 
 protocol VideoDataModelProtocol {
-    func createUrl(_ headUrl: String, _ queryId: String, _ id: String) -> String
+    func getVideoData<Model: Decodable>(_ headUrl: String,
+                                        _ queryIdStr: String,
+                                        _ id: String,
+                                        completion: @escaping (Model) -> Void)
 }
 
 class VideoDataModel: VideoDataModelProtocol {
@@ -268,72 +271,91 @@ class VideoDataModel: VideoDataModelProtocol {
         return key ?? ""
     }
     
-    func createUrl(_ headUrl: String, _ queryId: String, _ id: String) -> String {
+    private func createUrl(_ headUrl: String, _ queryId: String, _ id: String) -> String {
         let head = headUrl
         let apiKey = self.encodeApiKey(apiKey)
         let qStr = "\(queryId)\(id)"
         return head + apiKey + qStr
     }
-    //TODO: - need put into one func
-    func getVideo(_ vId: String, completion: @escaping (VideoModel) -> Void) {
-        let cUrl = self.createUrl(VideoURLs.video.rawValue, "&id=", vId)
-        //        print(cUrl)
+    
+    func getVideoData<Model: Decodable>(_ headUrl: String,
+                                        _ queryIdStr: String,
+                                        _ id: String,
+                                        completion: @escaping (Model) -> Void) {
+        let cUrl = self.createUrl(headUrl, queryIdStr, id)
         
         if let url = URL(string: cUrl) {
             let decoder = JSONDecoder()
             let request = AF.request(url)
             
-            request.validate().responseDecodable(of: VideoModel.self, decoder: decoder) { data in
+            request.validate().responseDecodable(of: Model.self, decoder: decoder) { data in
                 if let uValue = data.value {
                     completion(uValue)
                 }
             }
         }
     }
+    
     //TODO: - need put into one func
-    func getPlaylistTitle(_ plId: String, completion: @escaping (PlayListTitleModel) -> Void) {
-        let cUrl = self.createUrl(VideoURLs.playlistTitle.rawValue, "&id=", plId)
-        
-        if let url = URL(string: cUrl) {
-            let decoder = JSONDecoder()
-            let request = AF.request(url)
-            
-            request.validate().responseDecodable(of: PlayListTitleModel.self, decoder: decoder) { data in
-                if let uValue = data.value {
-                    completion(uValue)
-                }
-            }
-        }
-    }
+//    func getVideo(_ vId: String, completion: @escaping (VideoModel) -> Void) {
+//        let cUrl = self.createUrl(VideoURLs.video.rawValue, "&id=", vId)
+//        //        print(cUrl)
+//        
+//        if let url = URL(string: cUrl) {
+//            let decoder = JSONDecoder()
+//            let request = AF.request(url)
+//            
+//            request.validate().responseDecodable(of: VideoModel.self, decoder: decoder) { data in
+//                if let uValue = data.value {
+//                    completion(uValue)
+//                }
+//            }
+//        }
+//    }
     //TODO: - need put into one func
-    func getPlaylistItems(_ plId: String, completion: @escaping (PlaylistModel) -> Void) {
-        let cUrl = self.createUrl(VideoURLs.playlist.rawValue, "&playlistId=", plId)
-        
-        if let url = URL(string: cUrl) {
-            let decoder = JSONDecoder()
-            let request = AF.request(url)
-            
-            request.validate().responseDecodable(of: PlaylistModel.self, decoder: decoder) { data in
-                if let uValue = data.value {
-                    
-                    completion(uValue)
-                }
-            }
-        }
-    }
+//    func getPlaylistTitle(_ plId: String, completion: @escaping (PlayListTitleModel) -> Void) {
+//        let cUrl = self.createUrl(VideoURLs.playlistTitle.rawValue, "&id=", plId)
+//        
+//        if let url = URL(string: cUrl) {
+//            let decoder = JSONDecoder()
+//            let request = AF.request(url)
+//            
+//            request.validate().responseDecodable(of: PlayListTitleModel.self, decoder: decoder) { data in
+//                if let uValue = data.value {
+//                    completion(uValue)
+//                }
+//            }
+//        }
+//    }
     //TODO: - need put into one func
-    func getChannel(_ chId: String, completion: @escaping (ChannelModel) -> Void) {
-        let cUrl = self.createUrl(VideoURLs.channel.rawValue, "&id=", chId)
-        
-        if let url = URL(string: cUrl) {
-            let decoder = JSONDecoder()
-            let request = AF.request(url)
-            
-            request.validate().responseDecodable(of: ChannelModel.self, decoder: decoder) { data in
-                if let uValue = data.value {
-                    completion(uValue)
-                }
-            }
-        }
-    }
+//    func getPlaylistItems(_ plId: String, completion: @escaping (PlaylistModel) -> Void) {
+//        let cUrl = self.createUrl(VideoURLs.playlist.rawValue, "&playlistId=", plId)
+//        
+//        if let url = URL(string: cUrl) {
+//            let decoder = JSONDecoder()
+//            let request = AF.request(url)
+//            
+//            request.validate().responseDecodable(of: PlaylistModel.self, decoder: decoder) { data in
+//                if let uValue = data.value {
+//                    
+//                    completion(uValue)
+//                }
+//            }
+//        }
+//    }
+    //TODO: - need put into one func
+//    func getChannel(_ chId: String, completion: @escaping (ChannelModel) -> Void) {
+//        let cUrl = self.createUrl(VideoURLs.channel.rawValue, "&id=", chId)
+//        
+//        if let url = URL(string: cUrl) {
+//            let decoder = JSONDecoder()
+//            let request = AF.request(url)
+//            
+//            request.validate().responseDecodable(of: ChannelModel.self, decoder: decoder) { data in
+//                if let uValue = data.value {
+//                    completion(uValue)
+//                }
+//            }
+//        }
+//    }
 }

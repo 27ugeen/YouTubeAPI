@@ -25,7 +25,7 @@ class PlayerViewModel {
     }
     //MARK: - methods
     func getVideos(_ playlistId: String, completion: @escaping ([VideoItemsStub]) -> Void) {
-        dataModel.getPlaylistItems(playlistId) { data in
+        dataModel.getVideoData(VideoURLs.playlist.rawValue, "&playlistId=", playlistId) { (data: PlaylistModel) in
             self.videoItems = []
             data.items.forEach { item in
                 
@@ -34,11 +34,10 @@ class PlayerViewModel {
                 let group = DispatchGroup()
                 
                 group.enter()
-                self.dataModel.getVideo(item.videoId) { data in
+                self.dataModel.getVideoData(VideoURLs.video.rawValue, "&id=", item.videoId) { (data: VideoModel) in
                     vCount = data.items[0].viewCount
                     group.leave()
                 }
-                
                 group.notify(queue: .main) {
                     let newVideo = VideoItemsStub(videoId: item.videoId,
                                                   videoTitle: item.videoTitle,
